@@ -1,0 +1,54 @@
+#!/usr/bin/env node
+
+const readline = require('readline');
+const fs = require('fs');
+/*const readInterface = readline.createInterface({
+    input: fs.createReadStream('/home/pi/Progetto/bin/dispositivi/light'),
+    console: false
+});*/
+
+
+const { execFile } = require('child_process');
+const path = require("path");
+const directoryPath = path.join(__dirname, "dispositivi");
+
+var app = require("express")();
+var http = require("http").Server(app);
+
+
+app.get("/:light/:status", function(req, res){
+    	var status = (req.params.status).toLowerCase();
+	var dispositivo = (req.params.light).toLowerCase();
+	
+    	console.log(dispositivo + " " + status);
+	fs.readdir(directoryPath, function(err, files){
+		//handling error
+		if(err) {return console.log("unable to scan directory: " + err);}
+
+		//listening all files using forEach
+		files.forEach(function(file){
+			const directoryPathCommand = path.join(directoryPath, file);
+			fs.readdir(directoryPathCommand, function(err, commands){
+				commands.forEach(function(command){
+					if(dispositivo==file){
+						if(status == command){
+							comandoTrovato=1;
+							const child = execFile('node', ["/home/pi/Progetto/bin/dispositivi/"+dispositivo+"/"+status], (error, stdout, stderr) => {
+  							if (error) {
+    								throw error;
+  							}
+  							console.log(stdout);
+						});
+
+				    		}
+					} 
+				});
+			});
+		});
+	});
+	res.send("<h1>"+ dispositivo + " " + status + "</h1>");
+});
+
+http.listen(8080, function(){
+    console.log("listening on *:8080");
+});

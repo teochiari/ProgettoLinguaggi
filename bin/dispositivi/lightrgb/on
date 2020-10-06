@@ -1,0 +1,9 @@
+#!/usr/bin/env node
+//GPIO
+var pigpio = require('pigpio');
+pigpio.configureSocketPort(8889);
+var Gpio =pigpio.Gpio;
+
+led = new Gpio(16, {mode: Gpio.OUTPUT});
+
+led.digitalWrite(1);

@@ -1,0 +1,11 @@
+//GPIO
+var pigpio = require('pigpio');
+pigpio.configureSocketPort(8889);
+var Gpio =pigpio.Gpio;
+
+led = new Gpio(17, {mode: Gpio.OUTPUT});
+
+
+led.digitalWrite(0);
+
+
